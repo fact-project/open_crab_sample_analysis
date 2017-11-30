@@ -1,0 +1,72 @@
+# the classifier to use
+classifier : |
+  ensemble.RandomForestClassifier(
+      n_estimators=200,
+      max_features='sqrt',
+      n_jobs=-1,
+      max_depth=15,
+      criterion='entropy',
+  )
+
+
+# randomly sample the data if you dont want to use the whole set
+n_background: 120000
+n_signal: 120000
+
+# define the number of cross validations to perform
+n_cross_validations : 20
+
+training_variables:
+ # - gamma_energy_prediction
+ # - gamma_energy_prediction_std
+ - conc_core
+ - concentration_one_pixel
+ - concentration_two_pixel
+ - leakage
+ - leakage2
+ - size
+ - width
+ - length
+ - conc_cog
+ - m3l
+ - m3t
+ - num_islands
+ - num_pixel_in_shower
+ - ph_charge_shower_max
+ - ph_charge_shower_mean
+ - ph_charge_shower_min
+ - ph_charge_shower_variance
+ # - ph_charge_shower_kurtosis
+ # - ph_charge_shower_skewness
+ # - photoncharge_mean
+ # - max_slopes_shower_kurtosis
+ # - max_slopes_shower_max
+ # - max_slopes_shower_mean
+ # - max_slopes_shower_min
+ # - max_slopes_shower_skewness
+ # - max_slopes_shower_variance
+ # - arr_time_shower_kurtosis
+ # - arr_time_shower_max
+ # - arr_time_shower_mean
+ # - arr_time_shower_min
+ # - arr_time_shower_skewness
+ # - arr_time_shower_variance
+ # - slope_long
+ # - slope_spread
+ # - slope_spread_weighted
+ # - slope_trans
+ # - timespread
+ # - timespread_weighted
+
+# feature generation, constants have to be prefixed with @
+feature_generation:
+  needed_keys:
+    - width
+    - length
+    - size
+  features:
+    area: width * length * @pi
+    log_size: log(size)
+    log_length: log(length)
+    size_area: size / (width * length * @pi)
+    area_size_cut_var: (width * length * @pi) / log(size)**2

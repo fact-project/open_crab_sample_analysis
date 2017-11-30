@@ -1,0 +1,50 @@
+regressor: |
+  ensemble.RandomForestRegressor(
+    n_estimators=200,
+    max_features=5,
+    min_samples_split=3,
+    n_jobs=-1,
+    criterion='mse',
+    max_depth=15,
+  )
+
+n_signal: 120000
+
+log_target: False
+
+n_cross_validations: 20
+
+training_variables:
+  - size
+  - width
+  - length
+  - m3_trans
+  - m3_long
+  - conc_core
+  - m3l
+  - m3t
+  - concentration_one_pixel
+  - concentration_two_pixel
+  - leakage
+  - leakage2
+  - conc_cog
+  - num_islands
+  - num_pixel_in_shower
+  - ph_charge_shower_mean
+  - ph_charge_shower_variance
+  - ph_charge_shower_max
+
+
+# feature generation, constants have to be prefixed with @
+feature_generation:
+  needed_keys:
+    - size
+    - width
+    - length
+    - cog_x
+    - cog_y
+  features:
+    log_size: log(size)
+    size_area: size / (width * length * @pi)
+    area: (width * length * @pi)
+    cog_r: sqrt(cog_x**2 + cog_y**2)

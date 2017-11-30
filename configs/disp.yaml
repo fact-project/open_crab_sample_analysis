@@ -1,0 +1,56 @@
+disp_regressor : |
+  ensemble.RandomForestRegressor(
+      n_estimators=200,
+      max_features='sqrt',
+      n_jobs=-1,
+      max_depth=15,
+  )
+
+sign_classifier: |
+  ensemble.RandomForestClassifier(
+      n_estimators=200,
+      max_features='sqrt',
+      n_jobs=-1,
+      max_depth=15,
+  )
+
+source_azimuth_column: az_source_calc
+source_zenith_column: zd_source_calc
+pointing_azimuth_column: az_tracking
+pointing_zenith_column: zd_tracking
+
+# randomly sample the data if you dont want to use the whole set
+n_signal : 200000
+
+# define th number of cross validations to perform
+n_cross_validations : 5
+
+training_variables:
+  - conc_cog
+  - conc_core
+  - delta
+  - disp
+  - leakage
+  - leakage2
+  - length
+  - m3l
+  - m3t
+  - m3_long
+  - m3_trans
+  - m4_long
+  - m4_trans
+  - size
+  - width
+  - slope_long
+  - slope_trans
+
+feature_generation:
+  needed_keys:
+    - width
+    - length
+    - size
+  features:
+    area: width * length * @pi
+    log_size: log(size)
+    log_length: log(length)
+    size_area: size / (width * length * @pi)
