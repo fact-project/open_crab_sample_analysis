@@ -1,0 +1,2 @@
+pyfact>=0.15.0
+https://github.com/fact-project/classifier-tools/archive/v0.6.0.tar.gz
