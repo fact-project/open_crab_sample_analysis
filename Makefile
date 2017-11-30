@@ -194,7 +194,8 @@ $(OUTDIR)/crab_disp_done: $(DISP_CONFIG) $(OUTDIR)/disp_model.pkl $(OUTDIR)/sign
 
 
 $(OUTDIR)/crab_theta_done: $(OUTDIR)/crab_disp_done
-	fact_calculate_theta $(OUTDIR)/crab_precuts.hdf5 --source CRAB
+	fact_calculate_theta $(OUTDIR)/crab_precuts.hdf5 --yes --source CRAB
+	touch $(OUTDIR)/crab_theta_done
 
 
 $(OUTDIR)/theta2_plot.pdf: $(OUTDIR)/crab_separation_done $(OUTDIR)/crab_theta_done | $(OUTDIR)
