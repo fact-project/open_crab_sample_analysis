@@ -5,7 +5,9 @@ Sample Gamma Analysis on our Open Crab Sample
 
 ## Software installation
 
-We recommend anaconda, download here: https://www.anaconda.com/download
+Besides a working python installation, you only need `curl` and `make`.
+
+For python, we recommend anaconda, download here: https://www.anaconda.com/download
 
 * After installing, create a new environment for the FACT analysis:
 
