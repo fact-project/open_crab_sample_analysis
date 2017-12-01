@@ -14,7 +14,7 @@ n_background: 120000
 n_signal: 120000
 
 # define the number of cross validations to perform
-n_cross_validations : 20
+n_cross_validations : 5
 
 training_variables:
  # - gamma_energy_prediction

@@ -6,13 +6,14 @@ regressor: |
     n_jobs=-1,
     criterion='mse',
     max_depth=15,
+    random_state=0,
   )
 
 n_signal: 120000
 
 log_target: False
 
-n_cross_validations: 20
+n_cross_validations: 5
 
 training_variables:
   - size
