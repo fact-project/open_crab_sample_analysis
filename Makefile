@@ -16,7 +16,7 @@ DISP_CONFIG=configs/disp.yaml
 PREDICTION_THRESHOLD=0.85
 THETA2_CUT=0.025
 
-URL=https://factdata.app.tu-dortmund.de/dl2
+URL=https://factdata.app.tu-dortmund.de/dl2/FACT-Tools/v0.17.2
 
 
 all: $(addprefix $(OUTDIR)/, \
@@ -207,22 +207,11 @@ $(OUTDIR)/theta2_plot.pdf: $(OUTDIR)/crab_separation_done $(OUTDIR)/crab_theta_d
 		-o $(OUTDIR)/theta2_plot.pdf
 
 
-all_done: $(OUTDIR)/gamma_test_regression_done \
-	$(OUTDIR)/gamma_separation_done \
-	$(OUTDIR)/crab_separation_done \
-	$(OUTDIR)/crab_regression_done
-
-		
-
-$(OUTDIR)/%_result.root: $(OUTDIR)/%.config
-	truee $<
-
-
 $(OUTDIR): 
 	mkdir -p $(OUTDIR)
 
 clean:
 	rm -rf $(OUTDIR)
 
-.PHONY: all clean
 
+.PHONY: all clean
