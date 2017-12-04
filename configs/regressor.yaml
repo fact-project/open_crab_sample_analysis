@@ -9,6 +9,9 @@ regressor: |
     random_state=0,
   )
 
+
+seed: 0
+
 n_signal: 120000
 
 log_target: False

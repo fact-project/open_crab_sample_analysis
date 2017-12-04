@@ -9,6 +9,9 @@ classifier : |
   )
 
 
+seed: 0
+
+
 # randomly sample the data if you dont want to use the whole set
 n_background: 120000
 n_signal: 120000
