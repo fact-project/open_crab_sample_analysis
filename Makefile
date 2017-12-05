@@ -198,9 +198,18 @@ $(OUTDIR)/crab_theta_done: $(OUTDIR)/crab_disp_done
 	touch $(OUTDIR)/crab_theta_done
 
 
-$(OUTDIR)/theta2_plot.pdf: $(OUTDIR)/crab_separation_done $(OUTDIR)/crab_theta_done | $(OUTDIR)
+$(OUTDIR)/crab_radec_done: $(OUTDIR)/crab_disp_done
+	fact_calculate_radec $(OUTDIR)/crab_precuts.hdf5 --yes 
+	touch $(OUTDIR)/crab_radec_done
+
+
+
+$(OUTDIR)/crab_dl3.hdf5: scripts/to_dl3.py $(OUTDIR)/crab_separation_done $(OUTDIR)/crab_theta_done $(OUTDIR)/crab_regression_done $(OUTDIR)/crab_radec_done
+	python scripts/to_dl3.py $(OUTDIR)/crab_precuts.hdf5 $(OUTDIR)/crab_dl3.hdf5
+
+$(OUTDIR)/theta2_plot.pdf: $(OUTDIR)/crab_dl3.hdf5
 	fact_plot_theta_squared \
-		$(OUTDIR)/crab_precuts.hdf5 \
+		$(OUTDIR)/crab_dl3.hdf5 \
 		--threshold=$(PREDICTION_THRESHOLD) \
 		--theta2-cut=$(THETA2_CUT) \
 		--preliminary \
@@ -214,4 +223,4 @@ clean:
 	rm -rf $(OUTDIR)
 
 
-.PHONY: all clean
+.PHONY: all clean crab_done
