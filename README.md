@@ -12,7 +12,7 @@ For python, we recommend anaconda, download here: https://www.anaconda.com/downl
 * After installing, create a new environment for the FACT analysis:
 
 ```
-$ conda create -n fact python=3.6 ipython matplotlib scikit-learn==0.19.0 pandas astropy pymongo tqdm h5py pymysql sqlalchemy pytables wrapt click pyyaml joblib
+$ conda create -n fact python=3.6 ipython matplotlib scikit-learn=0.19.1 pandas astropy pymongo tqdm h5py pymysql sqlalchemy pytables wrapt click pyyaml joblib
 ```
 
 * Activate the environment
