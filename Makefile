@@ -28,16 +28,16 @@ dl2:
 
 # download the level 2 data files
 dl2/gamma.hdf5: | dl2 
-	curl --fail -u fact -o dl2/gamma.hdf5 $(URL)/gamma_simulations_facttools_dl2.hdf5    
+	curl --fail -o dl2/gamma.hdf5 $(URL)/gamma_simulations_facttools_dl2.hdf5    
 
 dl2/gamma_diffuse.hdf5: | dl2
-	curl --fail -u fact -o dl2/gamma_diffuse.hdf5 $(URL)/gamma_simulations_diffuse_facttools_dl2.hdf5    
+	curl --fail -o dl2/gamma_diffuse.hdf5 $(URL)/gamma_simulations_diffuse_facttools_dl2.hdf5    
 
 dl2/proton.hdf5: | dl2
-	curl --fail -u fact -o dl2/proton.hdf5 $(URL)/proton_simulations_facttools_dl2.hdf5
+	curl --fail -o dl2/proton.hdf5 $(URL)/proton_simulations_facttools_dl2.hdf5
 
 dl2/crab.hdf5: | dl2
-	curl --fail -u fact -o dl2/crab.hdf5 $(URL)/open_crab_sample_facttools_dl2.hdf5    
+	curl --fail -o dl2/crab.hdf5 $(URL)/open_crab_sample_facttools_dl2.hdf5    
 
 
 # Apply precuts to the files
