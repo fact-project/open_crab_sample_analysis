@@ -16,10 +16,10 @@ sign_classifier: |
 
 seed: 0
 
-source_azimuth_column: az_source_calc
-source_zenith_column: zd_source_calc
-pointing_azimuth_column: az_tracking
-pointing_zenith_column: zd_tracking
+source_azimuth_column: source_position_az
+source_zenith_column: source_position_zd
+pointing_azimuth_column: pointing_position_az
+pointing_zenith_column: pointing_position_zd
 
 # randomly sample the data if you dont want to use the whole set
 n_signal : 200000
@@ -28,23 +28,22 @@ n_signal : 200000
 n_cross_validations : 5
 
 training_variables:
-  - conc_cog
-  - conc_core
+  - concentration_cog
+  - concentration_core
   - delta
-  - disp
-  - leakage
+  - leakage1
   - leakage2
   - length
-  - m3l
-  - m3t
-  - m3_long
-  - m3_trans
-  - m4_long
-  - m4_trans
+  - skewness_long
+  - skewness_trans
+  - kurtosis_long
+  - kurtosis_trans
   - size
   - width
   - slope_long
   - slope_trans
+  - time_gradient_slope_long
+  - time_gradient_slope_trans
 
 feature_generation:
   needed_keys:
@@ -53,6 +52,7 @@ feature_generation:
     - size
   features:
     area: width * length * @pi
+    width_length: 1 - (width / length)
     log_size: log(size)
     log_length: log(length)
     size_area: size / (width * length * @pi)

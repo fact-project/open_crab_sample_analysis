@@ -12,7 +12,7 @@ selection:
     width:
       - <
       - 35
-    leakage:
+    leakage1:
       - <
       - 0.6
     leakage2:
