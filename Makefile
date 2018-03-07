@@ -21,6 +21,12 @@ URL=https://factdata.app.tu-dortmund.de/dl2/FACT-Tools/v0.17.2
 
 all: $(addprefix $(OUTDIR)/, \
 	theta2_plot.pdf \
+	) \
+	$(addprefix $(OUTDIR)/, \
+	gamma_theta_done \
+	) \
+	$(addprefix $(OUTDIR)/, \
+	gamma_test_regression_done \
 	)
 
 dl2:
@@ -197,6 +203,9 @@ $(OUTDIR)/crab_theta_done: $(OUTDIR)/crab_disp_done
 	fact_calculate_theta $(OUTDIR)/crab_precuts.hdf5 --yes --source CRAB
 	touch $(OUTDIR)/crab_theta_done
 
+$(OUTDIR)/gamma_theta_done: $(OUTDIR)/gamma_disp_done
+	fact_calculate_theta $(OUTDIR)/gamma_test.hdf5 --yes --chunksize=300000 
+	touch $(OUTDIR)/gamma_theta_done
 
 $(OUTDIR)/crab_radec_done: $(OUTDIR)/crab_disp_done
 	fact_calculate_radec $(OUTDIR)/crab_precuts.hdf5 --yes 
