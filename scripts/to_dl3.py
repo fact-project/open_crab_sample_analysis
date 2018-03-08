@@ -36,7 +36,7 @@ def main(inputfile, outputfile):
     )
     df.drop(['unix_time_utc_0', 'unix_time_utc_1'], axis=1, inplace=True)
 
-    to_h5py(outputfile, df, key='events', mode='w')
+    to_h5py(df, outputfile, key='events', mode='w')
 
     with h5py.File(outputfile, 'r+') as f:
 
