@@ -1,8 +1,9 @@
 # INPUTFILES
-CRAB_FILE=dl2/crab.hdf5
-GAMMA_FILE=dl2/gamma.hdf5
-GAMMA_DIFFUSE_FILE=dl2/gamma_diffuse.hdf5
-PROTON_FILE=dl2/proton.hdf5
+INDIR=dl2
+CRAB_FILE=$(INDIR)/crab.hdf5
+GAMMA_FILE=$(INDIR)/gamma.hdf5
+GAMMA_DIFFUSE_FILE=$(INDIR)/gamma_diffuse.hdf5
+PROTON_FILE=$(INDIR)/proton.hdf5
 
 # OUTPUT DIRECTORY
 OUTDIR=build
@@ -14,9 +15,9 @@ SEPARATOR_CONFIG=configs/separator.yaml
 DISP_CONFIG=configs/disp.yaml
 
 PREDICTION_THRESHOLD=0.85
-THETA2_CUT=0.025
+THETA2_CUT=0.022
 
-URL=https://factdata.app.tu-dortmund.de/dl2/FACT-Tools/v0.17.2
+URL=https://factdata.app.tu-dortmund.de/dl2/FACT-Tools/v1.0.0
 
 
 all: $(addprefix $(OUTDIR)/, \
