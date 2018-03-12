@@ -15,7 +15,7 @@ SEPARATOR_CONFIG=configs/separator.yaml
 DISP_CONFIG=configs/disp.yaml
 
 PREDICTION_THRESHOLD=0.85
-THETA2_CUT=0.022
+THETA2_CUT=0.025
 
 URL=https://factdata.app.tu-dortmund.de/dl2/FACT-Tools/v1.0.0
 
@@ -27,7 +27,6 @@ all: $(addprefix $(OUTDIR)/, \
 	gamma_application_done \
 	) \
 	$(addprefix $(OUTDIR)/, \
-	gamma_diffuse_application_done \
 	)
 
 dl2:
@@ -121,33 +120,11 @@ $(OUTDIR)/disp_model.pkl $(OUTDIR)/sign_model.pkl $(OUTDIR)/cv_disp.hdf5: ./$(DI
 		-k events
 
 
-$(OUTDIR)/gamma_diffuse_application_done: $(SEPARATOR_CONFIG) $(OUTDIR)/separator.pkl $(REGRESSOR_CONFIG) $(OUTDIR)/regressor.pkl $(DISP_CONFIG) $(OUTDIR)/disp_model.pkl $(OUTDIR)/sign_model.pkl | $(OUTDIR)/gamma_diffuse_precuts.hdf5
-	klaas_apply_energy_regressor $(REGRESSOR_CONFIG) \
-		$(OUTDIR)/gamma_diffuse_precuts.hdf5 \
-		$(OUTDIR)/regressor.pkl \
-		-k events  --yes
-
-	klaas_apply_separation_model \
-		$(SEPARATOR_CONFIG) \
-		$(OUTDIR)/gamma_diffuse_precuts.hdf5 \
-		$(OUTDIR)/separator.pkl \
-		-k events --chunksize=100000 --yes
-
-	klaas_apply_disp_regressor $(DISP_CONFIG) \
-		$(OUTDIR)/gamma_diffuse_precuts.hdf5 \
-		$(OUTDIR)/disp_model.pkl \
-		$(OUTDIR)/sign_model.pkl \
-		-k events  --yes --chunksize=100000
-
-	fact_calculate_theta $(OUTDIR)/gamma_diffuse_precuts.hdf5 --yes --chunksize=300000
-
-	touch $(OUTDIR)/gamma_diffuse_application_done
-
 $(OUTDIR)/gamma_application_done: $(SEPARATOR_CONFIG) $(OUTDIR)/separator.pkl $(REGRESSOR_CONFIG) $(OUTDIR)/regressor.pkl $(DISP_CONFIG) $(OUTDIR)/disp_model.pkl $(OUTDIR)/sign_model.pkl | $(OUTDIR)/gamma_test.hdf5
 	klaas_apply_energy_regressor $(REGRESSOR_CONFIG) \
 		$(OUTDIR)/gamma_test.hdf5 \
 		$(OUTDIR)/regressor.pkl \
-		-k events  --yes
+		-k events  --yes --chunksize=100000
 
 	klaas_apply_separation_model \
 		$(SEPARATOR_CONFIG) \
