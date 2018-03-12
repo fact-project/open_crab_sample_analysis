@@ -20,46 +20,23 @@ n_signal: 120000
 n_cross_validations : 5
 
 training_variables:
- # - gamma_energy_prediction
- # - gamma_energy_prediction_std
- - conc_core
+ - concentration_cog
+ - concentration_core
  - concentration_one_pixel
  - concentration_two_pixel
- - leakage
+ - leakage1
  - leakage2
  - size
  - width
  - length
- - conc_cog
- - m3l
- - m3t
+ - skewness_long
+ - skewness_trans
+ - kurtosis_long
+ - kurtosis_trans
  - num_islands
  - num_pixel_in_shower
- - ph_charge_shower_max
- - ph_charge_shower_mean
- - ph_charge_shower_min
- - ph_charge_shower_variance
- # - ph_charge_shower_kurtosis
- # - ph_charge_shower_skewness
- # - photoncharge_mean
- # - max_slopes_shower_kurtosis
- # - max_slopes_shower_max
- # - max_slopes_shower_mean
- # - max_slopes_shower_min
- # - max_slopes_shower_skewness
- # - max_slopes_shower_variance
- # - arr_time_shower_kurtosis
- # - arr_time_shower_max
- # - arr_time_shower_mean
- # - arr_time_shower_min
- # - arr_time_shower_skewness
- # - arr_time_shower_variance
- # - slope_long
- # - slope_spread
- # - slope_spread_weighted
- # - slope_trans
- # - timespread
- # - timespread_weighted
+ - photoncharge_shower_mean
+ - photoncharge_shower_variance
 
 # feature generation, constants have to be prefixed with @
 feature_generation:

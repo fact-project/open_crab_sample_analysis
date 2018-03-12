@@ -20,7 +20,7 @@ def main(inputfile, outputfile):
             'gamma_energy_prediction',
             'ra_prediction',
             'dec_prediction',
-            'unix_time_utc',
+            'timestamp',
             'theta_deg',
             'theta_deg_off_1',
             'theta_deg_off_2',
@@ -29,12 +29,6 @@ def main(inputfile, outputfile):
             'theta_deg_off_5',
         ],
     )
-
-    df['timestamp'] = pd.to_datetime(
-        df['unix_time_utc_0'] * 1e6 + df['unix_time_utc_1'],
-        unit='us',
-    )
-    df.drop(['unix_time_utc_0', 'unix_time_utc_1'], axis=1, inplace=True)
 
     to_h5py(df, outputfile, key='events', mode='w')
 

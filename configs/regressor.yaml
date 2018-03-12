@@ -15,6 +15,7 @@ seed: 0
 n_signal: 120000
 
 log_target: False
+target_name: corsika_event_header_total_energy
 
 n_cross_validations: 5
 
@@ -22,21 +23,19 @@ training_variables:
   - size
   - width
   - length
-  - m3_trans
-  - m3_long
-  - conc_core
-  - m3l
-  - m3t
+  - skewness_trans
+  - skewness_long
+  - concentration_cog
+  - concentration_core
   - concentration_one_pixel
   - concentration_two_pixel
-  - leakage
+  - leakage1
   - leakage2
-  - conc_cog
   - num_islands
   - num_pixel_in_shower
-  - ph_charge_shower_mean
-  - ph_charge_shower_variance
-  - ph_charge_shower_max
+  - photoncharge_shower_mean
+  - photoncharge_shower_variance
+  - photoncharge_shower_max
 
 
 # feature generation, constants have to be prefixed with @
