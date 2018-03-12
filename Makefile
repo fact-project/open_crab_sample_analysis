@@ -170,7 +170,7 @@ $(OUTDIR)/crab_application_done: $(SEPARATOR_CONFIG) $(OUTDIR)/separator.pkl $(R
 	klaas_apply_energy_regressor $(REGRESSOR_CONFIG) \
 		$(OUTDIR)/crab_precuts.hdf5 \
 		$(OUTDIR)/regressor.pkl \
-		-k events  --yes
+		-k events  --yes --chunksize 100000
 
 	klaas_apply_separation_model \
 		$(SEPARATOR_CONFIG) \
