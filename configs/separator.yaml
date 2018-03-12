@@ -35,9 +35,7 @@ training_variables:
  - kurtosis_trans
  - num_islands
  - num_pixel_in_shower
- - photoncharge_shower_max
  - photoncharge_shower_mean
- - photoncharge_shower_min
  - photoncharge_shower_variance
 
 # feature generation, constants have to be prefixed with @

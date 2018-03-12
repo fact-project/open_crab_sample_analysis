@@ -28,22 +28,20 @@ n_signal : 200000
 n_cross_validations : 5
 
 training_variables:
-  - concentration_cog
-  - concentration_core
-  - delta
-  - leakage1
-  - leakage2
+  - size
+  - num_pixel_in_shower
+  - width
   - length
   - skewness_long
-  - skewness_trans
   - kurtosis_long
-  - kurtosis_trans
-  - size
-  - width
+  - concentration_cog
+  - concentration_core
+  - leakage1
+  - leakage2
   - slope_long
-  - slope_trans
   - time_gradient_slope_long
-  - time_gradient_slope_trans
+  - photoncharge_shower_mean
+  - photoncharge_shower_variance
 
 feature_generation:
   needed_keys:
@@ -53,6 +51,4 @@ feature_generation:
   features:
     area: width * length * @pi
     width_length: 1 - (width / length)
-    log_size: log(size)
-    log_length: log(length)
     size_area: size / (width * length * @pi)
