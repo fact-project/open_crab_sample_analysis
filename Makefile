@@ -51,7 +51,7 @@ $(OUTDIR)/crab_precuts.hdf5: $(CRAB_FILE) configs/quality_cuts.yaml | $(OUTDIR)
 	klaas_apply_cuts ./configs/quality_cuts.yaml \
 		$(CRAB_FILE) \
 		$(OUTDIR)/crab_precuts.hdf5 \
-		-h h5py -k events --chunksize=10000
+		-k events --chunksize=10000
 
 $(OUTDIR)/gamma_precuts.hdf5: $(GAMMA_FILE) configs/quality_cuts.yaml | $(OUTDIR)
 	klaas_apply_cuts ./configs/quality_cuts.yaml \
