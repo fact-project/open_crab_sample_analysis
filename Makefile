@@ -1,33 +1,19 @@
-# INPUTFILES
+URL=https://factdata.app.tu-dortmund.de/dl2/FACT-Tools/v1.0.0
 INDIR=dl2
+OUTDIR=build
+
 CRAB_FILE=$(INDIR)/crab.hdf5
 GAMMA_FILE=$(INDIR)/gamma.hdf5
 GAMMA_DIFFUSE_FILE=$(INDIR)/gamma_diffuse.hdf5
 PROTON_FILE=$(INDIR)/proton.hdf5
 
-# OUTPUT DIRECTORY
-OUTDIR=build
-
-# CONFIG FILES
-
-REGRESSOR_CONFIG=configs/regressor.yaml
-SEPARATOR_CONFIG=configs/separator.yaml
-DISP_CONFIG=configs/disp.yaml
+KLAAS_CONFIG=configs/klaas.yaml
 
 PREDICTION_THRESHOLD=0.85
 THETA2_CUT=0.025
 
-URL=https://factdata.app.tu-dortmund.de/dl2/FACT-Tools/v1.0.0
 
-
-all: $(addprefix $(OUTDIR)/, \
-	theta2_plot.pdf \
-	) \
-	$(addprefix $(OUTDIR)/, \
-	gamma_application_done \
-	) \
-	$(addprefix $(OUTDIR)/, \
-	)
+all: $(OUTDIR)/theta2_plot.pdf $(OUTDIR)/gamma_test_dl3.hdf5
 
 dl2:
 	mkdir -p dl2
@@ -51,27 +37,27 @@ $(OUTDIR)/crab_precuts.hdf5: $(CRAB_FILE) configs/quality_cuts.yaml | $(OUTDIR)
 	klaas_apply_cuts ./configs/quality_cuts.yaml \
 		$(CRAB_FILE) \
 		$(OUTDIR)/crab_precuts.hdf5 \
-		-k events --chunksize=10000
+		--chunksize=10000
 
 $(OUTDIR)/gamma_precuts.hdf5: $(GAMMA_FILE) configs/quality_cuts.yaml | $(OUTDIR)
 	klaas_apply_cuts ./configs/quality_cuts.yaml \
 		$(GAMMA_FILE) \
 		$(OUTDIR)/gamma_precuts.hdf5 \
-		-k events --chunksize=10000
+		--chunksize=10000
 
 
 $(OUTDIR)/gamma_diffuse_precuts.hdf5: $(GAMMA_DIFFUSE_FILE) configs/quality_cuts.yaml | $(OUTDIR)
 	klaas_apply_cuts ./configs/quality_cuts.yaml \
 		$(GAMMA_DIFFUSE_FILE) \
 		$(OUTDIR)/gamma_diffuse_precuts.hdf5 \
-		-k events --chunksize=10000
+		--chunksize=10000
 
 # Apply precuts to proton simulations
 $(OUTDIR)/proton_precuts.hdf5: $(PROTON_FILE) configs/quality_cuts.yaml | $(OUTDIR)
 	klaas_apply_cuts ./configs/quality_cuts.yaml \
 		$(PROTON_FILE) \
 		$(OUTDIR)/proton_precuts.hdf5 \
-		-k events --chunksize=10000
+		--chunksize=10000
 
 # Split gamma data into
 # * a training set for the separation
@@ -93,82 +79,52 @@ $(OUTDIR)/proton_train.hdf5 $(OUTDIR)/proton_test.hdf5: $(OUTDIR)/proton_precuts
 		-i events
 
 
-$(OUTDIR)/separator.pkl $(OUTDIR)/separator_performance.hdf5: $(SEPARATOR_CONFIG) $(OUTDIR)/proton_train.hdf5 $(OUTDIR)/gamma_train_sep.hdf5
+$(OUTDIR)/separator.pkl $(OUTDIR)/separator_performance.hdf5: $(KLAAS_CONFIG) $(OUTDIR)/proton_train.hdf5 $(OUTDIR)/gamma_train_sep.hdf5
 	klaas_train_separation_model \
-		$(SEPARATOR_CONFIG) \
+		$(KLAAS_CONFIG) \
 		$(OUTDIR)/gamma_train_sep.hdf5 \
 		$(OUTDIR)/proton_train.hdf5 \
 		$(OUTDIR)/separator_performance.hdf5 \
-		$(OUTDIR)/separator.pkl \
-		-k events
+		$(OUTDIR)/separator.pkl
 
-$(OUTDIR)/regressor.pkl $(OUTDIR)/regressor_performance.hdf5: $(REGRESSOR_CONFIG) $(OUTDIR)/gamma_train_reg.hdf5
+$(OUTDIR)/regressor.pkl $(OUTDIR)/regressor_performance.hdf5: $(KLAAS_CONFIG) $(OUTDIR)/gamma_train_reg.hdf5
 	klaas_train_energy_regressor\
-		$(REGRESSOR_CONFIG) \
+		$(KLAAS_CONFIG) \
 		$(OUTDIR)/gamma_train_reg.hdf5 \
 		$(OUTDIR)/regressor_performance.hdf5 \
-		$(OUTDIR)/regressor.pkl \
-		-k events
+		$(OUTDIR)/regressor.pkl
 
-$(OUTDIR)/disp_model.pkl $(OUTDIR)/sign_model.pkl $(OUTDIR)/cv_disp.hdf5: ./$(DISP_CONFIG) $(OUTDIR)/gamma_diffuse_precuts.hdf5
+$(OUTDIR)/disp_model.pkl $(OUTDIR)/sign_model.pkl $(OUTDIR)/cv_disp.hdf5: ./$(KLAAS_CONFIG) $(OUTDIR)/gamma_diffuse_precuts.hdf5
 	klaas_train_disp_regressor \
-		$(DISP_CONFIG) \
+		$(KLAAS_CONFIG) \
 		$(OUTDIR)/gamma_diffuse_precuts.hdf5 \
 		$(OUTDIR)/cv_disp.hdf5 \
 		$(OUTDIR)/disp_model.pkl \
-		$(OUTDIR)/sign_model.pkl \
-		-k events
+		$(OUTDIR)/sign_model.pkl
 
 
-$(OUTDIR)/gamma_application_done: $(SEPARATOR_CONFIG) $(OUTDIR)/separator.pkl $(REGRESSOR_CONFIG) $(OUTDIR)/regressor.pkl $(DISP_CONFIG) $(OUTDIR)/disp_model.pkl $(OUTDIR)/sign_model.pkl | $(OUTDIR)/gamma_test.hdf5
-	klaas_apply_energy_regressor $(REGRESSOR_CONFIG) \
-		$(OUTDIR)/gamma_test.hdf5 \
-		$(OUTDIR)/regressor.pkl \
-		-k events  --yes --chunksize=100000
-
-	klaas_apply_separation_model \
-		$(SEPARATOR_CONFIG) \
-		$(OUTDIR)/gamma_test.hdf5 \
+$(OUTDIR)/gamma_test_dl3.hdf5: $(KLAAS_CONFIG) $(OUTDIR)/separator.pkl $(OUTDIR)/regressor.pkl
+$(OUTDIR)/gamma_test_dl3.hdf5: $(OUTDIR)/disp_model.pkl $(OUTDIR)/sign_model.pkl $(OUTDIR)/gamma_test.hdf5
+	klaas_fact_to_dl3 $(KLAAS_CONFIG) $(OUTDIR)/gamma_test.hdf5 \
 		$(OUTDIR)/separator.pkl \
-		-k events --chunksize=100000 --yes
-
-	klaas_apply_disp_regressor $(DISP_CONFIG) \
-		$(OUTDIR)/gamma_test.hdf5 \
+		$(OUTDIR)/regressor.pkl \
 		$(OUTDIR)/disp_model.pkl \
 		$(OUTDIR)/sign_model.pkl \
-		-k events  --yes --chunksize=100000
-
-	fact_calculate_theta $(OUTDIR)/gamma_test.hdf5 --yes --chunksize=300000
-
-	touch $(OUTDIR)/gamma_application_done
+		$(OUTDIR)/gamma_test_dl3.hdf5 \
+		--chunksize=100000 --yes
 
 
-$(OUTDIR)/crab_application_done: $(SEPARATOR_CONFIG) $(OUTDIR)/separator.pkl $(REGRESSOR_CONFIG) $(OUTDIR)/regressor.pkl $(DISP_CONFIG) $(OUTDIR)/disp_model.pkl $(OUTDIR)/sign_model.pkl | $(OUTDIR)/crab_precuts.hdf5
-	klaas_apply_energy_regressor $(REGRESSOR_CONFIG) \
-		$(OUTDIR)/crab_precuts.hdf5 \
-		$(OUTDIR)/regressor.pkl \
-		-k events  --yes --chunksize 100000
 
-	klaas_apply_separation_model \
-		$(SEPARATOR_CONFIG) \
-		$(OUTDIR)/crab_precuts.hdf5 \
+$(OUTDIR)/crab_dl3.hdf5: $(KLAAS_CONFIG) $(OUTDIR)/separator.pkl $(OUTDIR)/regressor.pkl
+$(OUTDIR)/crab_dl3.hdf5: $(OUTDIR)/disp_model.pkl $(OUTDIR)/sign_model.pkl $(OUTDIR)/crab_precuts.hdf5
+	klaas_fact_to_dl3 $(KLAAS_CONFIG) $(OUTDIR)/crab_precuts.hdf5 \
 		$(OUTDIR)/separator.pkl \
-		-k events --chunksize=100000 --yes
-
-	klaas_apply_disp_regressor $(DISP_CONFIG) \
-		$(OUTDIR)/crab_precuts.hdf5 \
+		$(OUTDIR)/regressor.pkl \
 		$(OUTDIR)/disp_model.pkl \
 		$(OUTDIR)/sign_model.pkl \
-		-k events  --yes --chunksize=100000
+		$(OUTDIR)/crab_dl3.hdf5 \
+		--chunksize=100000 --yes
 
-	fact_calculate_theta $(OUTDIR)/crab_precuts.hdf5 --yes --source CRAB
-	fact_calculate_radec $(OUTDIR)/crab_precuts.hdf5 --yes
-
-	touch $(OUTDIR)/crab_application_done
-
-
-$(OUTDIR)/crab_dl3.hdf5: scripts/to_dl3.py $(OUTDIR)/crab_application_done
-	python scripts/to_dl3.py $(OUTDIR)/crab_precuts.hdf5 $(OUTDIR)/crab_dl3.hdf5
 
 $(OUTDIR)/theta2_plot.pdf: $(OUTDIR)/crab_dl3.hdf5
 	fact_plot_theta_squared \

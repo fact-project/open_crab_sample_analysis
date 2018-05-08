@@ -1,5 +1,5 @@
 seed: 0
-n_cross_validations : 5
+n_cross_validations: 5
 
 selection:
     num_pixel_in_shower:
@@ -39,7 +39,7 @@ energy:
   log_target: False
   target_name: corsika_event_header_total_energy
   
-  training_variables:
+  features:
     - size
     - width
     - length
@@ -60,7 +60,7 @@ energy:
   
   # feature generation, constants have to be prefixed with @
   feature_generation:
-    needed_keys:
+    needed_columns:
       - size
       - width
       - length
@@ -91,7 +91,7 @@ separator:
   n_signal: 120000
   
   
-  training_variables:
+  features:
    - concentration_cog
    - concentration_core
    - concentration_one_pixel
@@ -112,7 +112,7 @@ separator:
   
   # feature generation, constants have to be prefixed with @
   feature_generation:
-    needed_keys:
+    needed_columns:
       - width
       - length
       - size
@@ -140,15 +140,15 @@ disp:
         max_depth=15,
     )
 
-  source_azimuth_column: source_position_az
-  source_zenith_column: source_position_zd
-  pointing_azimuth_column: pointing_position_az
-  pointing_zenith_column: pointing_position_zd
+  source_az_column: source_position_az
+  source_zd_column: source_position_zd
+  pointing_az_column: pointing_position_az
+  pointing_zd_column: pointing_position_zd
 
   # randomly sample the data if you dont want to use the whole set
   n_signal : 200000
 
-  training_variables:
+  features:
     - size
     - num_pixel_in_shower
     - width
@@ -165,7 +165,7 @@ disp:
     - photoncharge_shower_variance
 
   feature_generation:
-    needed_keys:
+    needed_columns:
       - width
       - length
       - size
