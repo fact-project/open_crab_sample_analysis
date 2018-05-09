@@ -129,7 +129,7 @@ disp:
         n_estimators=200,
         max_features='sqrt',
         n_jobs=-1,
-        max_depth=15,
+        max_depth=20,
     )
 
   sign_classifier: |
@@ -137,7 +137,7 @@ disp:
         n_estimators=200,
         max_features='sqrt',
         n_jobs=-1,
-        max_depth=15,
+        max_depth=20,
     )
 
   source_az_column: source_position_az
@@ -149,7 +149,6 @@ disp:
   n_signal : 200000
 
   features:
-    - size
     - num_pixel_in_shower
     - width
     - length
@@ -172,4 +171,5 @@ disp:
     features:
       area: width * length * @pi
       width_length: 1 - (width / length)
-      size_area: size / (width * length * @pi)
+      log_size: log(size)
+      log_size_area: log(size) / (width * length * @pi)
