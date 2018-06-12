@@ -13,7 +13,7 @@ PREDICTION_THRESHOLD=0.85
 THETA2_CUT=0.025
 
 
-all: $(OUTDIR)/theta2_plot.pdf $(OUTDIR)/gamma_test_dl3.hdf5
+all: $(OUTDIR)/theta2_plot.pdf $(OUTDIR)/gamma_test_dl3.hdf5 $(OUTDIR)/crab_dl3.hdf5
 
 dl2:
 	mkdir -p dl2
@@ -63,11 +63,10 @@ $(OUTDIR)/proton_precuts.hdf5: $(PROTON_FILE) configs/quality_cuts.yaml | $(OUTD
 # * a training set for the separation
 # * a training set for the energy regression
 # * a set for the testing/deconvolution
-$(OUTDIR)/gamma_train_sep.hdf5 $(OUTDIR)/gamma_train_reg.hdf5 $(OUTDIR)/gamma_test.hdf5: $(OUTDIR)/gamma_precuts.hdf5
+$(OUTDIR)/gamma_train.hdf5 $(OUTDIR)/gamma_test.hdf5: $(OUTDIR)/gamma_precuts.hdf5
 	klaas_split_data $(OUTDIR)/gamma_precuts.hdf5 $(OUTDIR)/gamma \
-		-f 0.2 -n train_sep \
-		-f 0.2 -n train_reg \
-		-f 0.6 -n test \
+		-f 0.3 -n train \
+		-f 0.7 -n test \
 		-i events
 
 
@@ -79,18 +78,18 @@ $(OUTDIR)/proton_train.hdf5 $(OUTDIR)/proton_test.hdf5: $(OUTDIR)/proton_precuts
 		-i events
 
 
-$(OUTDIR)/separator.pkl $(OUTDIR)/separator_performance.hdf5: $(KLAAS_CONFIG) $(OUTDIR)/proton_train.hdf5 $(OUTDIR)/gamma_train_sep.hdf5
+$(OUTDIR)/separator.pkl $(OUTDIR)/separator_performance.hdf5: $(KLAAS_CONFIG) $(OUTDIR)/proton_train.hdf5 $(OUTDIR)/gamma_train.hdf5
 	klaas_train_separation_model \
 		$(KLAAS_CONFIG) \
-		$(OUTDIR)/gamma_train_sep.hdf5 \
+		$(OUTDIR)/gamma_train.hdf5 \
 		$(OUTDIR)/proton_train.hdf5 \
 		$(OUTDIR)/separator_performance.hdf5 \
 		$(OUTDIR)/separator.pkl
 
-$(OUTDIR)/regressor.pkl $(OUTDIR)/regressor_performance.hdf5: $(KLAAS_CONFIG) $(OUTDIR)/gamma_train_reg.hdf5
+$(OUTDIR)/regressor.pkl $(OUTDIR)/regressor_performance.hdf5: $(KLAAS_CONFIG) $(OUTDIR)/gamma_train.hdf5
 	klaas_train_energy_regressor\
 		$(KLAAS_CONFIG) \
-		$(OUTDIR)/gamma_train_reg.hdf5 \
+		$(OUTDIR)/gamma_train.hdf5 \
 		$(OUTDIR)/regressor_performance.hdf5 \
 		$(OUTDIR)/regressor.pkl
 
