@@ -13,7 +13,7 @@ PREDICTION_THRESHOLD=0.85
 THETA2_CUT=0.025
 
 
-all: $(OUTDIR)/theta2_plot.pdf $(OUTDIR)/gamma_test_dl3.hdf5 $(OUTDIR)/crab_dl3.hdf5
+all: $(OUTDIR)/theta2_plot.pdf $(OUTDIR)/gamma_test_dl3.hdf5 $(OUTDIR)/crab_dl3.hdf5 $(OUTDIR)/proton_test_dl3.hdf5
 
 dl2:
 	mkdir -p dl2
@@ -110,6 +110,17 @@ $(OUTDIR)/gamma_test_dl3.hdf5: $(OUTDIR)/disp_model.pkl $(OUTDIR)/sign_model.pkl
 		$(OUTDIR)/disp_model.pkl \
 		$(OUTDIR)/sign_model.pkl \
 		$(OUTDIR)/gamma_test_dl3.hdf5 \
+		--chunksize=100000 --yes
+
+
+$(OUTDIR)/proton_test_dl3.hdf5: $(KLAAS_CONFIG) $(OUTDIR)/separator.pkl $(OUTDIR)/regressor.pkl
+$(OUTDIR)/proton_test_dl3.hdf5: $(OUTDIR)/disp_model.pkl $(OUTDIR)/sign_model.pkl $(OUTDIR)/proton_test.hdf5
+	klaas_fact_to_dl3 $(KLAAS_CONFIG) $(OUTDIR)/proton_test.hdf5 \
+		$(OUTDIR)/separator.pkl \
+		$(OUTDIR)/regressor.pkl \
+		$(OUTDIR)/disp_model.pkl \
+		$(OUTDIR)/sign_model.pkl \
+		$(OUTDIR)/proton_test_dl3.hdf5 \
 		--chunksize=100000 --yes
 
 
