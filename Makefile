@@ -7,7 +7,7 @@ GAMMA_FILE=$(INDIR)/gamma.hdf5
 GAMMA_DIFFUSE_FILE=$(INDIR)/gamma_diffuse.hdf5
 PROTON_FILE=$(INDIR)/proton.hdf5
 
-aict_CONFIG=configs/klaas.yaml
+AICT_CONFIG=configs/klaas.yaml
 
 PREDICTION_THRESHOLD=0.85
 THETA2_CUT=0.025
@@ -60,8 +60,7 @@ $(OUTDIR)/proton_precuts.hdf5: $(PROTON_FILE) configs/quality_cuts.yaml | $(OUTD
 		--chunksize=10000
 
 # Split gamma data into
-# * a training set for the separation
-# * a training set for the energy regression
+# * a training set
 # * a set for the testing/deconvolution
 $(OUTDIR)/gamma_train.hdf5 $(OUTDIR)/gamma_test.hdf5: $(OUTDIR)/gamma_precuts.hdf5
 	aict_split_data $(OUTDIR)/gamma_precuts.hdf5 $(OUTDIR)/gamma \
@@ -78,33 +77,33 @@ $(OUTDIR)/proton_train.hdf5 $(OUTDIR)/proton_test.hdf5: $(OUTDIR)/proton_precuts
 		-i events
 
 
-$(OUTDIR)/separator.pkl $(OUTDIR)/separator_performance.hdf5: $(aict_CONFIG) $(OUTDIR)/proton_train.hdf5 $(OUTDIR)/gamma_train.hdf5
+$(OUTDIR)/separator.pkl $(OUTDIR)/separator_performance.hdf5: $(AICT_CONFIG) $(OUTDIR)/proton_train.hdf5 $(OUTDIR)/gamma_train.hdf5
 	aict_train_separation_model \
-		$(aict_CONFIG) \
+		$(AICT_CONFIG) \
 		$(OUTDIR)/gamma_train.hdf5 \
 		$(OUTDIR)/proton_train.hdf5 \
 		$(OUTDIR)/separator_performance.hdf5 \
 		$(OUTDIR)/separator.pkl
 
-$(OUTDIR)/regressor.pkl $(OUTDIR)/regressor_performance.hdf5: $(aict_CONFIG) $(OUTDIR)/gamma_train.hdf5
+$(OUTDIR)/regressor.pkl $(OUTDIR)/regressor_performance.hdf5: $(AICT_CONFIG) $(OUTDIR)/gamma_train.hdf5
 	aict_train_energy_regressor\
-		$(aict_CONFIG) \
+		$(AICT_CONFIG) \
 		$(OUTDIR)/gamma_train.hdf5 \
 		$(OUTDIR)/regressor_performance.hdf5 \
 		$(OUTDIR)/regressor.pkl
 
-$(OUTDIR)/disp_model.pkl $(OUTDIR)/sign_model.pkl $(OUTDIR)/cv_disp.hdf5: ./$(aict_CONFIG) $(OUTDIR)/gamma_diffuse_precuts.hdf5
+$(OUTDIR)/disp_model.pkl $(OUTDIR)/sign_model.pkl $(OUTDIR)/cv_disp.hdf5: ./$(AICT_CONFIG) $(OUTDIR)/gamma_diffuse_precuts.hdf5
 	aict_train_disp_regressor \
-		$(aict_CONFIG) \
+		$(AICT_CONFIG) \
 		$(OUTDIR)/gamma_diffuse_precuts.hdf5 \
 		$(OUTDIR)/cv_disp.hdf5 \
 		$(OUTDIR)/disp_model.pkl \
 		$(OUTDIR)/sign_model.pkl
 
 
-$(OUTDIR)/gamma_test_dl3.hdf5: $(aict_CONFIG) $(OUTDIR)/separator.pkl $(OUTDIR)/regressor.pkl
+$(OUTDIR)/gamma_test_dl3.hdf5: $(AICT_CONFIG) $(OUTDIR)/separator.pkl $(OUTDIR)/regressor.pkl
 $(OUTDIR)/gamma_test_dl3.hdf5: $(OUTDIR)/disp_model.pkl $(OUTDIR)/sign_model.pkl $(OUTDIR)/gamma_test.hdf5
-	fact_to_dl3 $(aict_CONFIG) $(OUTDIR)/gamma_test.hdf5 \
+	fact_to_dl3 $(AICT_CONFIG) $(OUTDIR)/gamma_test.hdf5 \
 		$(OUTDIR)/separator.pkl \
 		$(OUTDIR)/regressor.pkl \
 		$(OUTDIR)/disp_model.pkl \
@@ -113,9 +112,9 @@ $(OUTDIR)/gamma_test_dl3.hdf5: $(OUTDIR)/disp_model.pkl $(OUTDIR)/sign_model.pkl
 		--chunksize=100000 --yes
 
 
-$(OUTDIR)/proton_test_dl3.hdf5: $(aict_CONFIG) $(OUTDIR)/separator.pkl $(OUTDIR)/regressor.pkl
+$(OUTDIR)/proton_test_dl3.hdf5: $(AICT_CONFIG) $(OUTDIR)/separator.pkl $(OUTDIR)/regressor.pkl
 $(OUTDIR)/proton_test_dl3.hdf5: $(OUTDIR)/disp_model.pkl $(OUTDIR)/sign_model.pkl $(OUTDIR)/proton_test.hdf5
-	fact_to_dl3 $(aict_CONFIG) $(OUTDIR)/proton_test.hdf5 \
+	fact_to_dl3 $(AICT_CONFIG) $(OUTDIR)/proton_test.hdf5 \
 		$(OUTDIR)/separator.pkl \
 		$(OUTDIR)/regressor.pkl \
 		$(OUTDIR)/disp_model.pkl \
@@ -125,9 +124,9 @@ $(OUTDIR)/proton_test_dl3.hdf5: $(OUTDIR)/disp_model.pkl $(OUTDIR)/sign_model.pk
 
 
 
-$(OUTDIR)/crab_dl3.hdf5: $(aict_CONFIG) $(OUTDIR)/separator.pkl $(OUTDIR)/regressor.pkl
+$(OUTDIR)/crab_dl3.hdf5: $(AICT_CONFIG) $(OUTDIR)/separator.pkl $(OUTDIR)/regressor.pkl
 $(OUTDIR)/crab_dl3.hdf5: $(OUTDIR)/disp_model.pkl $(OUTDIR)/sign_model.pkl $(OUTDIR)/crab_precuts.hdf5
-	fact_to_dl3 $(aict_CONFIG) $(OUTDIR)/crab_precuts.hdf5 \
+	fact_to_dl3 $(AICT_CONFIG) $(OUTDIR)/crab_precuts.hdf5 \
 		$(OUTDIR)/separator.pkl \
 		$(OUTDIR)/regressor.pkl \
 		$(OUTDIR)/disp_model.pkl \
