@@ -7,7 +7,7 @@ GAMMA_FILE=$(INDIR)/gamma.hdf5
 GAMMA_DIFFUSE_FILE=$(INDIR)/gamma_diffuse.hdf5
 PROTON_FILE=$(INDIR)/proton.hdf5
 
-AICT_CONFIG=configs/klaas.yaml
+AICT_CONFIG=configs/aict.yaml
 
 PREDICTION_THRESHOLD=0.85
 THETA2_CUT=0.025
