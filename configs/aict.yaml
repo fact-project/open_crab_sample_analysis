@@ -1,26 +1,7 @@
 seed: 0
+
 n_cross_validations: 5
 
-selection:
-    num_pixel_in_shower:
-      - '>='  # needs to be in quotes because > and ! are special character in yaml
-      - 10
-    num_islands:
-      - <
-      - 8
-    length:
-      - <
-      - 70
-    width:
-      - <
-      - 35
-    leakage1:
-      - <
-      - 0.6
-    leakage2:
-      - < # string representation also possible
-      - 0.85
-    
 energy:
   regressor: |
     ensemble.RandomForestRegressor(
@@ -36,7 +17,7 @@ energy:
   
   n_signal: 120000
   
-  log_target: False
+  log_target: True
   target_name: corsika_event_header_total_energy
   
   features:
@@ -98,7 +79,6 @@ separator:
    - concentration_two_pixel
    - leakage1
    - leakage2
-   - size
    - width
    - length
    - skewness_long
@@ -107,7 +87,6 @@ separator:
    - kurtosis_trans
    - num_islands
    - num_pixel_in_shower
-   - photoncharge_shower_mean
    - photoncharge_shower_variance
   
   # feature generation, constants have to be prefixed with @
@@ -119,7 +98,6 @@ separator:
     features:
       area: width * length * @pi
       log_size: log(size)
-      log_length: log(length)
       size_area: size / (width * length * @pi)
       area_size_cut_var: (width * length * @pi) / log(size)**2
 
