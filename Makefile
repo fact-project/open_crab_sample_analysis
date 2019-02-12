@@ -1,4 +1,4 @@
-URL=https://factdata.app.tu-dortmund.de/dl2/FACT-Tools/v1.0.0
+URL=https://factdata.app.tu-dortmund.de/dl2/FACT-Tools/v1.1.2
 INDIR=dl2
 OUTDIR=build
 
