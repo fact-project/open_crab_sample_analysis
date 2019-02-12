@@ -9,7 +9,7 @@ PROTON_FILE=$(INDIR)/proton.hdf5
 
 AICT_CONFIG=configs/aict.yaml
 
-PREDICTION_THRESHOLD=0.85
+PREDICTION_THRESHOLD=0.8
 THETA2_CUT=0.025
 
 
@@ -77,10 +77,10 @@ $(OUTDIR)/proton_train.hdf5 $(OUTDIR)/proton_test.hdf5: $(OUTDIR)/proton_precuts
 		-i events
 
 
-$(OUTDIR)/separator.pkl $(OUTDIR)/separator_performance.hdf5: $(AICT_CONFIG) $(OUTDIR)/proton_train.hdf5 $(OUTDIR)/gamma_train.hdf5
+$(OUTDIR)/separator.pkl $(OUTDIR)/separator_performance.hdf5: $(AICT_CONFIG) $(OUTDIR)/proton_train.hdf5 $(OUTDIR)/gamma_diffuse_precuts.hdf5
 	aict_train_separation_model \
 		$(AICT_CONFIG) \
-		$(OUTDIR)/gamma_train.hdf5 \
+		$(OUTDIR)/gamma_diffuse_precuts.hdf5 \
 		$(OUTDIR)/proton_train.hdf5 \
 		$(OUTDIR)/separator_performance.hdf5 \
 		$(OUTDIR)/separator.pkl
