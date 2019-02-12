@@ -12,25 +12,25 @@ For python, we recommend anaconda, download here: https://www.anaconda.com/downl
 * After installing, create a new environment for the FACT analysis:
 
 ```
-$ conda create -n fact python=3.6 ipython matplotlib scikit-learn=0.19.1 pandas astropy pymongo tqdm h5py pymysql sqlalchemy pytables wrapt click pyyaml joblib
+$ python -m venv .venv
 ```
 
-* Activate the environment
+
+Activate the virtualenv
+```
+$ . .venv/bin/activate
+```
+
+
+* Install the  requirements
 
 ```
-$ source activate fact
-```
-
-* Install the non-conda requirements
-
-```
-$ pip install -r requirements.txt
+(venv) $ pip install -r requirements.txt
 ```
 
 * run the analysis
-
 ```
-$ make
+(venv) $ make
 ```
 
 This should be the result stored in ``build/theta2_plot.pdf`
