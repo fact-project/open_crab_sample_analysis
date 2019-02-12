@@ -33,6 +33,6 @@ $ . .venv/bin/activate
 (venv) $ make
 ```
 
-This should be the result stored in ``build/theta2_plot.pdf`
+This should be the result stored in `build/theta2_plot.pdf`
 
 ![result.png](result.png)
