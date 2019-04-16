@@ -1,4 +1,4 @@
-# open_crab_sample_analysis
+# FACT Open Crab Sample Analysis
 
 Sample Gamma Analysis on our Open Crab Sample
 
