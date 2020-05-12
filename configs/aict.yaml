@@ -1,3 +1,4 @@
+---
 seed: 0
 
 n_cross_validations: 5
@@ -13,13 +14,12 @@ energy:
       max_depth=15,
       random_state=0,
     )
-  
-  
+
   n_signal: 120000
-  
-  log_target: True
+
+  log_target: true
   target_name: corsika_event_header_total_energy
-  
+
   features:
     - size
     - width
@@ -37,8 +37,8 @@ energy:
     - photoncharge_shower_mean
     - photoncharge_shower_variance
     - photoncharge_shower_max
-  
-  
+
+
   # feature generation, constants have to be prefixed with @
   feature_generation:
     needed_columns:
@@ -52,12 +52,11 @@ energy:
       size_area: size / (width * length * @pi)
       area: (width * length * @pi)
       cog_r: sqrt(cog_x**2 + cog_y**2)
-  
 
 
 separator:
   # the classifier to use
-  classifier : |
+  classifier: |
     ensemble.RandomForestClassifier(
         n_estimators=200,
         max_features='sqrt',
@@ -65,30 +64,30 @@ separator:
         max_depth=15,
         criterion='entropy',
     )
-  
-  
+
+
   # randomly sample the data if you dont want to use the whole set
   n_background: 120000
   n_signal: 120000
-  
-  
+
+
   features:
-   - concentration_cog
-   - concentration_core
-   - concentration_one_pixel
-   - concentration_two_pixel
-   - leakage1
-   - leakage2
-   - width
-   - length
-   - skewness_long
-   - skewness_trans
-   - kurtosis_long
-   - kurtosis_trans
-   - num_islands
-   - num_pixel_in_shower
-   - photoncharge_shower_variance
-  
+    - concentration_cog
+    - concentration_core
+    - concentration_one_pixel
+    - concentration_two_pixel
+    - leakage1
+    - leakage2
+    - width
+    - length
+    - skewness_long
+    - skewness_trans
+    - kurtosis_long
+    - kurtosis_trans
+    - num_islands
+    - num_pixel_in_shower
+    - photoncharge_shower_variance
+
   # feature generation, constants have to be prefixed with @
   feature_generation:
     needed_columns:
@@ -102,7 +101,7 @@ separator:
       area_size_cut_var: (width * length * @pi) / log(size)**2
 
 disp:
-  disp_regressor : |
+  disp_regressor: |
     ensemble.RandomForestRegressor(
         n_estimators=200,
         max_features='sqrt',
@@ -118,13 +117,15 @@ disp:
         max_depth=20,
     )
 
+  project_disp: true
+  coordinate_transformation: FACT
   source_az_column: source_position_az
   source_zd_column: source_position_zd
   pointing_az_column: pointing_position_az
   pointing_zd_column: pointing_position_zd
 
   # randomly sample the data if you dont want to use the whole set
-  n_signal : 200000
+  n_signal: 200000
 
   features:
     - num_pixel_in_shower
