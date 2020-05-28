@@ -2,6 +2,8 @@
 seed: 0
 
 n_cross_validations: 5
+true_energy_column: corsika_event_header_total_energy
+size_column: size
 
 energy:
   regressor: |

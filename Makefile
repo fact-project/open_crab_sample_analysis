@@ -14,6 +14,7 @@ THETA2_CUT=0.025
 
 
 all: $(OUTDIR)/theta2_plot.pdf $(OUTDIR)/gamma_test_dl3.hdf5 $(OUTDIR)/crab_dl3.hdf5 $(OUTDIR)/proton_test_dl3.hdf5
+all: $(OUTDIR)/separator_performance.pdf $(OUTDIR)/energy_performance.pdf $(OUTDIR)/disp_performance.pdf
 
 dl2:
 	mkdir -p dl2
@@ -77,20 +78,20 @@ $(OUTDIR)/proton_train.hdf5 $(OUTDIR)/proton_test.hdf5: $(OUTDIR)/proton_precuts
 		-i events
 
 
-$(OUTDIR)/separator.pkl $(OUTDIR)/separator_performance.hdf5: $(AICT_CONFIG) $(OUTDIR)/proton_train.hdf5 $(OUTDIR)/gamma_diffuse_precuts.hdf5
+$(OUTDIR)/separator.pkl $(OUTDIR)/cv_separator.hdf5: $(AICT_CONFIG) $(OUTDIR)/proton_train.hdf5 $(OUTDIR)/gamma_diffuse_precuts.hdf5
 	aict_train_separation_model \
 		$(AICT_CONFIG) \
 		$(OUTDIR)/gamma_diffuse_precuts.hdf5 \
 		$(OUTDIR)/proton_train.hdf5 \
-		$(OUTDIR)/separator_performance.hdf5 \
+		$(OUTDIR)/cv_separator.hdf5 \
 		$(OUTDIR)/separator.pkl
 
-$(OUTDIR)/regressor.pkl $(OUTDIR)/regressor_performance.hdf5: $(AICT_CONFIG) $(OUTDIR)/gamma_train.hdf5
+$(OUTDIR)/energy.pkl $(OUTDIR)/cv_energy.hdf5: $(AICT_CONFIG) $(OUTDIR)/gamma_train.hdf5
 	aict_train_energy_regressor\
 		$(AICT_CONFIG) \
 		$(OUTDIR)/gamma_train.hdf5 \
-		$(OUTDIR)/regressor_performance.hdf5 \
-		$(OUTDIR)/regressor.pkl
+		$(OUTDIR)/cv_energy.hdf5 \
+		$(OUTDIR)/energy.pkl
 
 $(OUTDIR)/disp_model.pkl $(OUTDIR)/sign_model.pkl $(OUTDIR)/cv_disp.hdf5: ./$(AICT_CONFIG) $(OUTDIR)/gamma_diffuse_precuts.hdf5
 	aict_train_disp_regressor \
@@ -101,22 +102,22 @@ $(OUTDIR)/disp_model.pkl $(OUTDIR)/sign_model.pkl $(OUTDIR)/cv_disp.hdf5: ./$(AI
 		$(OUTDIR)/sign_model.pkl
 
 
-$(OUTDIR)/gamma_test_dl3.hdf5: $(AICT_CONFIG) $(OUTDIR)/separator.pkl $(OUTDIR)/regressor.pkl
+$(OUTDIR)/gamma_test_dl3.hdf5: $(AICT_CONFIG) $(OUTDIR)/separator.pkl $(OUTDIR)/energy.pkl
 $(OUTDIR)/gamma_test_dl3.hdf5: $(OUTDIR)/disp_model.pkl $(OUTDIR)/sign_model.pkl $(OUTDIR)/gamma_test.hdf5
 	fact_to_dl3 $(AICT_CONFIG) $(OUTDIR)/gamma_test.hdf5 \
 		$(OUTDIR)/separator.pkl \
-		$(OUTDIR)/regressor.pkl \
+		$(OUTDIR)/energy.pkl \
 		$(OUTDIR)/disp_model.pkl \
 		$(OUTDIR)/sign_model.pkl \
 		$(OUTDIR)/gamma_test_dl3.hdf5 \
 		--chunksize=100000 --yes
 
 
-$(OUTDIR)/proton_test_dl3.hdf5: $(AICT_CONFIG) $(OUTDIR)/separator.pkl $(OUTDIR)/regressor.pkl
+$(OUTDIR)/proton_test_dl3.hdf5: $(AICT_CONFIG) $(OUTDIR)/separator.pkl $(OUTDIR)/energy.pkl
 $(OUTDIR)/proton_test_dl3.hdf5: $(OUTDIR)/disp_model.pkl $(OUTDIR)/sign_model.pkl $(OUTDIR)/proton_test.hdf5
 	fact_to_dl3 $(AICT_CONFIG) $(OUTDIR)/proton_test.hdf5 \
 		$(OUTDIR)/separator.pkl \
-		$(OUTDIR)/regressor.pkl \
+		$(OUTDIR)/energy.pkl \
 		$(OUTDIR)/disp_model.pkl \
 		$(OUTDIR)/sign_model.pkl \
 		$(OUTDIR)/proton_test_dl3.hdf5 \
@@ -124,15 +125,41 @@ $(OUTDIR)/proton_test_dl3.hdf5: $(OUTDIR)/disp_model.pkl $(OUTDIR)/sign_model.pk
 
 
 
-$(OUTDIR)/crab_dl3.hdf5: $(AICT_CONFIG) $(OUTDIR)/separator.pkl $(OUTDIR)/regressor.pkl
+$(OUTDIR)/crab_dl3.hdf5: $(AICT_CONFIG) $(OUTDIR)/separator.pkl $(OUTDIR)/energy.pkl
 $(OUTDIR)/crab_dl3.hdf5: $(OUTDIR)/disp_model.pkl $(OUTDIR)/sign_model.pkl $(OUTDIR)/crab_precuts.hdf5
 	fact_to_dl3 $(AICT_CONFIG) $(OUTDIR)/crab_precuts.hdf5 \
 		$(OUTDIR)/separator.pkl \
-		$(OUTDIR)/regressor.pkl \
+		$(OUTDIR)/energy.pkl \
 		$(OUTDIR)/disp_model.pkl \
 		$(OUTDIR)/sign_model.pkl \
 		$(OUTDIR)/crab_dl3.hdf5 \
 		--chunksize=100000 --yes
+
+
+$(OUTDIR)/disp_performance.pdf: $(AICT_CONFIG) $(OUTDIR)/disp_model.pkl $(OUTDIR)/gamma_diffuse_precuts.hdf5
+	aict_plot_disp_performance \
+		$(AICT_CONFIG) \
+		$(OUTDIR)/cv_disp.hdf5 \
+		$(OUTDIR)/gamma_diffuse_precuts.hdf5 \
+		$(OUTDIR)/disp_model.pkl \
+		$(OUTDIR)/sign_model.pkl \
+		-o $@
+
+
+$(OUTDIR)/energy_performance.pdf: $(AICT_CONFIG) $(OUTDIR)/energy.pkl
+	aict_plot_regressor_performance \
+		$(AICT_CONFIG) \
+		$(OUTDIR)/cv_energy.hdf5 \
+		$(OUTDIR)/energy.pkl \
+		-o $@
+
+
+$(OUTDIR)/separator_performance.pdf: $(AICT_CONFIG) $(OUTDIR)/separator.pkl
+	aict_plot_separator_performance \
+		$(AICT_CONFIG) \
+		$(OUTDIR)/cv_separator.hdf5 \
+		$(OUTDIR)/separator.pkl \
+		-o $@
 
 
 $(OUTDIR)/theta2_plot.pdf: $(OUTDIR)/crab_dl3.hdf5
