@@ -1,9 +1,14 @@
 ---
 seed: 0
 
+coordinate_transformation: FACT
 n_cross_validations: 5
 true_energy_column: corsika_event_header_total_energy
 size_column: size
+source_az_column: source_position_az
+source_zd_column: source_position_zd
+pointing_az_column: pointing_position_az
+pointing_zd_column: pointing_position_zd
 
 energy:
   regressor: |
@@ -120,11 +125,6 @@ disp:
     )
 
   project_disp: true
-  coordinate_transformation: FACT
-  source_az_column: source_position_az
-  source_zd_column: source_position_zd
-  pointing_az_column: pointing_position_az
-  pointing_zd_column: pointing_position_zd
 
   # randomly sample the data if you dont want to use the whole set
   n_signal: 200000

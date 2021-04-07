@@ -1,4 +1,4 @@
 pyfact>=0.19.1
-aict-tools~=0.26.0
+aict-tools~=0.27.0
 https://github.com/fact-project/fact_plots/archive/v0.12.2.tar.gz
 https://github.com/fact-project/irf/archive/v0.5.1.tar.gz
